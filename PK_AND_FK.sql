@@ -24,7 +24,7 @@ ADD CONSTRAINT emisor_pk PRIMARY KEY (id_emisora);
 
 
 ALTER TABLE "Tipo_Operacion"
-ADD CONSTRAINT tipo_operacion_pk PRIMARY KEY (id_tipo_oper);
+ADD CONSTRAINT tipo_operacion_pk PRIMARY KEY (id_tipo_op);
 
 
 ALTER TABLE "Instrumento"
@@ -43,18 +43,31 @@ ALTER TABLE "Operador"
 ADD CONSTRAINT operador_pk PRIMARY KEY (ced_oper);
 
 ALTER TABLE "Trade_off"
-ADD CONSTRAINT trade_off_pk PRIMARY KEY (id_trade);
+ADD CONSTRAINT trade_off_pk PRIMARY KEY (id_trade_off);
 
-ALTER TABLE "Orden"
-ADD CONSTRAINT orden_pk PRIMARY KEY (id_orden);
+ALTER TABLE "Sector"
+ADD CONSTRAINT sector_pk PRIMARY KEY (id_sector);
 
+ALTER TABLE "Bolsa_Valores"
+ADD CONSTRAINT bolsa_pk PRIMARY KEY(id_bolsa_valores);
 
-ALTER TABLE "Reporte"
-ADD CONSTRAINT reporte_pk PRIMARY KEY (id_reporte);
+ALTER TABLE "Moneda"
+ADD CONSTRAINT moneda_pk PRIMARY KEY (id_moneda);
 
+ALTER TABLE "Pais"
+ADD CONSTRAINT pais_pk PRIMARY KEY (id_pais);
 
-ALTER TABLE "Detalle_Reporte"
-ADD CONSTRAINT detalle_reporte_pk PRIMARY KEY (id_reporte);
+ALTER TABLE "Region"
+ADD CONSTRAINT region_pk PRIMARY KEY (id_region);
+
+ALTER TABLE "Reporte_Inversion"
+ADD CONSTRAINT reporte_inversion_pk PRIMARY KEY (id_reporte);
+
+ALTER TABLE "Clasificación"
+ADD CONSTRAINT clasificaion_pk PRIMARY KEY (id_clasificacion);
+
+ALTER TABLE "Industria"
+ADD CONSTRAINT industria_pk PRIMARY KEY(id_industria);
 
 -- Creacion de integridad Referencial
 
@@ -73,65 +86,62 @@ ALTER TABLE "Direccion_Fiscal" ADD CONSTRAINT inversionista_direccion_fiscal_fk
 FOREIGN KEY (id_inversionista)
 REFERENCES "Inversionista" (id_inversionista)
 ON UPDATE CASCADE ON DELETE CASCADE;
-/*#####################################################################*/
 
+/*FK Tabla Inversionista*/
 ALTER TABLE "Inversionista" ADD CONSTRAINT tipo_riesgo_inversionista_fk
 FOREIGN KEY (id_tipo_riesgo)
 REFERENCES "Tipo_Riesgo" (id_tipo_riesgo)
 ON UPDATE CASCADE ON DELETE CASCADE;
 
-/*FK Tabla Detalle_Reporte*/
-ALTER TABLE "Detalle_Reporte" ADD CONSTRAINT inversionista_detalle_reporte_fk
+/*FK Tabla Reporte_Inversion*/
+ALTER TABLE "Reporte_Inversion" ADD CONSTRAINT inversionista_detalle_reporte_fk
 FOREIGN KEY (id_inversionista)
 REFERENCES "Inversionista" (id_inversionista)
 ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE "Detalle_Reporte" ADD CONSTRAINT promor_detalle_reporte_fk
+ALTER TABLE "Reporte_Inversion" ADD CONSTRAINT promor_detalle_reporte_fk
 FOREIGN KEY (id_promotor)
 REFERENCES "Promotor" (id_promotor)
 ON UPDATE CASCADE ON DELETE CASCADE;
-/*############################################################*/
 
 /*FK Tabla Instrumento*/
 ALTER TABLE "Instrumento" ADD CONSTRAINT emisor_instrumento_fk
+FOREIGN KEY (id_moneda)
+REFERENCES "Moneda" (id_moneda)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE "Instrumento" ADD CONSTRAINT bolsa_fk
+FOREIGN KEY (id_bolsa_valores)
+REFERENCES "Bolsa_Valores" (id_bolsa_valores)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE "Instrumento" ADD CONSTRAINT emisor_fk
 FOREIGN KEY (id_emisora)
 REFERENCES "Emisor" (id_emisora)
 ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE "Instrumento" ADD CONSTRAINT tipo_operacion_instrumento_fk
-FOREIGN KEY (id_tipo_oper)
-REFERENCES "Tipo_Operacion" (id_tipo_oper)
+ALTER TABLE "Instrumento" ADD CONSTRAINT sector_fk
+FOREIGN KEY (id_sector)
+REFERENCES "Sector" (id_sector)
 ON UPDATE CASCADE ON DELETE CASCADE;
-/*#######################################################*/
 
+/*FK Tabla Operador*/
 ALTER TABLE "Operador" ADD CONSTRAINT empleado_operador_fk
 FOREIGN KEY (id_empleado)
 REFERENCES "Empleados" (id_empleado)
 ON UPDATE CASCADE ON DELETE CASCADE;
 
+/*FK Tabla Promotor*/
 ALTER TABLE "Promotor" ADD CONSTRAINT empleado_promotor_fk
 FOREIGN KEY (id_empleado)
 REFERENCES "Empleados" (id_empleado)
 ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE "Detalle_Reporte" ADD CONSTRAINT promotor_detalle_reporte_fk
-FOREIGN KEY (id_promotor)
-REFERENCES "Promotor" (id_promotor)
-ON UPDATE CASCADE ON DELETE CASCADE;
-
-
 /*FK Tabla Trade_off */
-
 ALTER TABLE "Trade_off" ADD CONSTRAINT operador_trade_off_fk
 FOREIGN KEY (ced_oper)
 REFERENCES "Operador" (ced_oper)
 ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE "Trade_off" ADD CONSTRAINT orden_trade_off_fk
-FOREIGN KEY (id_orden)
-REFERENCES "Orden" (id_orden)
-ON UPDATE CASCADE ON DELETE CASCADE;
-
 
 ALTER TABLE "Trade_off" ADD CONSTRAINT instrumento_trade_off_pk
 FOREIGN KEY (id_instrumento)
@@ -139,31 +149,36 @@ REFERENCES "Instrumento" (id_instrumento)
 ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE "Trade_off" ADD CONSTRAINT tipo_operacion_trade_off_fk
-FOREIGN KEY (id_tipo_oper)
-REFERENCES "Tipo_Operacion" (id_tipo_oper)
-ON UPDATE CASCADE ON DELETE CASCADE;
-/*####################################################*/
-
-/*FK Tabla Orden*/
-ALTER TABLE "Orden" ADD CONSTRAINT trade_off_instrumento_orden_fk
-FOREIGN KEY (isin, id_trade)
-REFERENCES "Trade_off" (isin, id_intrumento)
+FOREIGN KEY (id_tipo_op)
+REFERENCES "Tipo_Operacion" (id_tipo_op)
 ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE "Orden" ADD CONSTRAINT instrumento_orden_fk
-FOREIGN KEY (id_instrumento)
-REFERENCES "Instrumento" (id_instrumento)
-ON UPDATE CASCADE ON DELETE CASCADE;
- 
-
-/*#####################################################*/
-
-ALTER TABLE "Reporte" ADD CONSTRAINT orden_reporte_fk
-FOREIGN KEY (id_orden)
-REFERENCES "Orden" (id_orden)
+ALTER TABLE "Trade_off" ADD CONSTRAINT id_inversionista_trade_off_fk
+FOREIGN KEY (id_inversionista)
+REFERENCES "Inversionista" (id_inversionista)
 ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE "Detalle_Reporte" ADD CONSTRAINT reporte_detalle_reporte_fk
-FOREIGN KEY (id_reporte)
-REFERENCES "Reporte" (id_reporte)
+/*FK Tabla Bolsa_Valores*/
+ALTER TABLE "Bolsa_Valores" ADD CONSTRAINT pais_fk
+FOREIGN KEY (id_pais)
+REFERENCES "Pais" (id_pais)
 ON UPDATE CASCADE ON DELETE CASCADE;
+
+/*FK Tabla Moneda*/
+ALTER TABLE "Moneda" ADD CONSTRAINT tipo_operacion_trade_off_fk
+FOREIGN KEY (id_pais)
+REFERENCES "Pais" (id_pais)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+/*FK Tabla Emisor*/
+ALTER TABLE "Emisor" ADD CONSTRAINT tipo_operacion_trade_off_fk
+FOREIGN KEY (id_pais)
+REFERENCES "Pais" (id_pais)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE "Emisor" ADD CONSTRAINT region_fk
+FOREIGN KEY (id_region)
+REFERENCES "Region" (id_region)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+
